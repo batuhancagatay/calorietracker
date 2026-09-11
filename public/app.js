@@ -487,9 +487,64 @@ if (!localStorage.getItem('logItems')) {
   localStorage.setItem('logItems', JSON.stringify([]));
 }
 
+// --------------- Theme Toggle ----------------
+
+const themeToggle = document.getElementById('themeToggle');
+const htmlElement = document.documentElement;
+
+// Get saved theme preference or use system preference
+function initTheme() {
+  const saved = localStorage.getItem('theme');
+
+  if (saved) {
+    // Use saved preference
+    htmlElement.setAttribute('data-theme', saved);
+  } else {
+    // Check system preference
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      htmlElement.setAttribute('data-theme', 'dark');
+    } else {
+      htmlElement.setAttribute('data-theme', 'light');
+    }
+  }
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
+  const currentTheme = htmlElement.getAttribute('data-theme');
+  if (currentTheme === 'dark') {
+    themeToggle.title = 'Switch to light mode';
+  } else {
+    themeToggle.title = 'Switch to dark mode';
+  }
+}
+
+themeToggle.addEventListener('click', () => {
+  const current = htmlElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+
+  htmlElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+  updateThemeIcon();
+});
+
+// Listen for system theme changes
+if (window.matchMedia) {
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    // Only apply if user hasn't saved a preference
+    if (!localStorage.getItem('theme')) {
+      const theme = e.matches ? 'dark' : 'light';
+      htmlElement.setAttribute('data-theme', theme);
+      updateThemeIcon();
+    }
+  });
+}
+
 // --------------- Init ----------------
 
 (async function init() {
+  initTheme();
+
   const params = new URLSearchParams(window.location.search);
   if (params.get('whoop_connected')) {
     window.history.replaceState({}, '', window.location.pathname);

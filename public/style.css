@@ -28,8 +28,9 @@
   --glow-blue: 0 0 20px rgba(76, 139, 245, 0.15);
 }
 
+/* Light mode via data-theme attribute or system preference */
 @media (prefers-color-scheme: light) {
-  :root {
+  :root:not([data-theme="dark"]) {
     --bg: #f8f9fb;
     --surface: #ffffff;
     --surface-raised: #f0f2f5;
@@ -45,6 +46,39 @@
     --glow-amber: 0 0 20px rgba(217, 119, 6, 0.1);
     --glow-blue: 0 0 20px rgba(59, 130, 246, 0.1);
   }
+}
+
+/* Explicit light mode via data-theme="light" */
+:root[data-theme="light"] {
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --surface-raised: #f0f2f5;
+  --border: #e1e4e8;
+  --text: #1a1e23;
+  --text-muted: #57606a;
+
+  --amber: #d97706;
+  --amber-dim: #f5d0b3;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --glow-amber: 0 0 20px rgba(217, 119, 6, 0.1);
+  --glow-blue: 0 0 20px rgba(59, 130, 246, 0.1);
+}
+
+/* Explicit dark mode via data-theme="dark" */
+:root[data-theme="dark"] {
+  --bg: #14171a;
+  --surface: #1c2024;
+  --surface-raised: #22262b;
+  --border: #2c3136;
+  --text: #edeef0;
+  --text-muted: #8b9096;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --glow-amber: 0 0 20px rgba(232, 163, 61, 0.15);
+  --glow-blue: 0 0 20px rgba(76, 139, 245, 0.15);
 }
 
 * { box-sizing: border-box; }
@@ -87,6 +121,42 @@ button, input {
 }
 
 .brand { display: flex; align-items: center; gap: 8px; }
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.theme-toggle:hover {
+  border-color: var(--text-muted);
+  box-shadow: 0 4px 12px rgba(76, 139, 245, 0.12);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.theme-icon {
+  width: 20px;
+  height: 20px;
+}
 .brand-mark {
   width: 24px;
   height: 24px;

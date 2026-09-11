@@ -21,10 +21,17 @@
       </svg>
       <span class="brand-name">Batuhan Calorie Tracker</span>
     </div>
-    <button id="whoopBtn" class="whoop-pill" data-connected="false">
-      <span class="dot" aria-hidden="true"></span>
-      <span id="whoopBtnLabel">Connect Whoop</span>
-    </button>
+    <div class="topbar-actions">
+      <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode" title="Toggle theme">
+        <svg class="theme-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button id="whoopBtn" class="whoop-pill" data-connected="false">
+        <span class="dot" aria-hidden="true"></span>
+        <span id="whoopBtnLabel">Connect Whoop</span>
+      </button>
+    </div>
   </header>
 
   <!-- Signature element: the energy gauge -->
