@@ -392,51 +392,80 @@ function makeEntryEditable(li, entry) {
   const originalName = nameEl.textContent;
   const originalCal = parseInt(calEl.textContent);
 
-  nameEl.contentEditable = true;
-  calEl.contentEditable = true;
-  nameEl.focus();
+  // Create input elements instead of using contentEditable to prevent XSS
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.value = originalName;
+  nameInput.className = 'entry-edit-input';
+  nameInput.style.maxWidth = '200px';
+
+  const calInput = document.createElement('input');
+  calInput.type = 'number';
+  calInput.value = originalCal;
+  calInput.className = 'entry-edit-input';
+  calInput.min = '0';
+  calInput.max = '100000';
+  calInput.style.maxWidth = '80px';
+
+  nameEl.replaceWith(nameInput);
+  calEl.replaceWith(calInput);
+  nameInput.focus();
 
   const saveEdit = async () => {
-    const newName = nameEl.textContent.trim() || originalName;
-    const newCal = parseInt(calEl.textContent) || originalCal;
+    const newName = nameInput.value.trim() || originalName;
+    const newCal = parseInt(nameInput.value);
+
+    // Validate input
+    if (newName.length === 0 || newName.length > 500) {
+      alert('Name must be between 1 and 500 characters');
+      return;
+    }
+
+    const calValue = parseInt(calInput.value);
+    if (isNaN(calValue) || calValue < 0 || calValue > 100000) {
+      alert('Calories must be between 0 and 100000');
+      return;
+    }
 
     try {
-      await fetch(`/api/food-log/${entry.id}`, {
+      const res = await fetch(`/api/food-log/${entry.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: newName,
-          calories: newCal
+          calories: calValue
         })
       });
 
-      nameEl.contentEditable = false;
-      calEl.contentEditable = false;
+      if (!res.ok) {
+        throw new Error(`Update failed: ${res.status}`);
+      }
+
       await refreshLog();
     } catch (e) {
       console.error('Error updating entry:', e);
-      nameEl.contentEditable = false;
-      calEl.contentEditable = false;
+      alert('Could not save changes');
+      // Restore original elements
+      nameInput.replaceWith(nameEl);
+      calInput.replaceWith(calEl);
     }
   };
 
-  nameEl.addEventListener('blur', saveEdit);
-  calEl.addEventListener('blur', saveEdit);
+  nameInput.addEventListener('blur', saveEdit);
+  calInput.addEventListener('blur', saveEdit);
 
   const handleKeydown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       saveEdit();
     } else if (e.key === 'Escape') {
-      nameEl.textContent = originalName;
-      calEl.textContent = originalCal;
-      nameEl.contentEditable = false;
-      calEl.contentEditable = false;
+      nameInput.replaceWith(nameEl);
+      calInput.replaceWith(calEl);
     }
   };
 
-  nameEl.addEventListener('keydown', handleKeydown);
-  calEl.addEventListener('keydown', handleKeydown);
+  nameInput.addEventListener('keydown', handleKeydown);
+  calInput.addEventListener('keydown', handleKeydown);
 }
 
 // Make entries editable on click

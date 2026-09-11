@@ -680,6 +680,23 @@ button, input {
 }
 .log-entry-delete:hover { color: var(--rust); }
 
+.entry-edit-input {
+  background: var(--surface-raised);
+  border: 1px solid var(--amber);
+  border-radius: var(--radius-sm);
+  padding: 6px 10px;
+  font-size: 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  transition: border-color 0.15s ease;
+}
+
+.entry-edit-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 8px rgba(76, 139, 245, 0.3);
+}
+
 /* Smooth transitions between light and dark mode */
 @media (prefers-color-scheme: light) {
   .gauge-card,
