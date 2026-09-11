@@ -420,19 +420,118 @@ button, input {
   gap: 10px;
 }
 
+/* ---------- Drinks card ---------- */
+.drinks-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 18px 20px;
+  box-shadow: var(--shadow-md);
+}
+
+.drinks-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.drink-select {
+  flex: 1;
+  min-width: 160px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+.drink-select:hover { border-color: var(--text-muted); }
+.drink-select:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+.quantity-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.quantity-input-group label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.quantity-input {
+  width: 60px;
+  background: var(--surface-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text);
+  text-align: center;
+  transition: border-color 0.15s ease;
+}
+.quantity-input:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
+
 /* ---------- Log card ---------- */
 .log-header {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .log-header .section-title { margin: 0; }
+
+.view-toggle {
+  display: flex;
+  gap: 6px;
+  background: var(--surface-raised);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.view-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.view-btn:hover { color: var(--text); }
+.view-btn.active {
+  background: var(--amber);
+  color: #1a1200;
+}
+
+.log-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  background: var(--surface-raised);
+  border-radius: var(--radius-sm);
+}
+
 .log-total {
   font-size: 14px;
   color: var(--amber);
   font-weight: 600;
   text-shadow: 0 0 12px rgba(232, 163, 61, 0.15);
+}
+
+.log-view {
+  transition: opacity 0.2s ease;
+}
+.log-view.hidden {
+  display: none;
 }
 
 .log-list {
@@ -448,16 +547,108 @@ button, input {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 11px 2px;
+  padding: 11px 6px;
   border-bottom: 1px solid var(--border);
-  transition: background-color 0.15s ease;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+  border-radius: 4px;
 }
 .log-list li:not(.log-empty):hover {
   background: var(--surface-raised);
-  border-radius: 4px;
-  padding: 11px 6px;
+  transform: translateX(2px);
 }
 .log-list li:last-child { border-bottom: none; }
+
+/* Charts */
+.chart-placeholder {
+  padding: 20px 10px;
+  background: var(--surface-raised);
+  border-radius: var(--radius-md);
+  margin-bottom: 12px;
+}
+
+.week-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 140px;
+  gap: 8px;
+}
+
+.chart-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.chart-bar .bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, var(--amber), #f0b45c);
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 0 8px rgba(232, 163, 61, 0.3);
+  transition: all 0.3s ease;
+}
+
+.chart-bar:hover .bar-fill {
+  box-shadow: 0 0 12px rgba(232, 163, 61, 0.5);
+  filter: brightness(1.1);
+}
+
+.chart-bar.active .bar-fill {
+  background: linear-gradient(180deg, var(--blue), #6ba3ff);
+  box-shadow: 0 0 12px rgba(76, 139, 245, 0.4);
+}
+
+.chart-bar span {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.month-chart {
+  display: flex;
+  gap: 16px;
+  height: 120px;
+}
+
+.month-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.month-bar .bar {
+  width: 100%;
+  background: linear-gradient(180deg, var(--green), #a8d5a8);
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 0 8px rgba(127, 183, 126, 0.3);
+  transition: all 0.3s ease;
+}
+
+.month-bar:hover .bar {
+  box-shadow: 0 0 12px rgba(127, 183, 126, 0.5);
+  filter: brightness(1.1);
+}
+
+.month-bar.active .bar {
+  background: linear-gradient(180deg, var(--blue), #6ba3ff);
+  box-shadow: 0 0 12px rgba(76, 139, 245, 0.4);
+}
+
+.month-bar span {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.view-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  margin: 0;
+}
 
 .log-empty {
   color: var(--text-muted);

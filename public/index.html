@@ -120,15 +120,81 @@
     <p class="analysis-status" id="analysisStatus" hidden></p>
   </section>
 
-  <!-- Today's log -->
+  <!-- Quick add drinks -->
+  <section class="drinks-card">
+    <h2 class="section-title">Quick add drink</h2>
+
+    <div class="drinks-controls">
+      <select id="drinkSelect" class="drink-select">
+        <option value="">Select a drink...</option>
+        <option value="water">Water (0 kcal)</option>
+        <option value="coffee">Coffee (5 kcal)</option>
+        <option value="tea">Tea (2 kcal)</option>
+        <option value="orange-juice">Orange juice (110 kcal)</option>
+        <option value="cola">Cola (140 kcal)</option>
+        <option value="beer">Beer (150 kcal)</option>
+        <option value="wine">Wine (125 kcal)</option>
+        <option value="milk">Milk (150 kcal)</option>
+        <option value="smoothie">Smoothie (200 kcal)</option>
+        <option value="coffee-latte">Coffee Latte (190 kcal)</option>
+      </select>
+
+      <div class="quantity-input-group">
+        <label for="drinkQty">Quantity:</label>
+        <input type="number" id="drinkQty" class="quantity-input" value="1" min="1" max="10">
+      </div>
+
+      <button id="addDrinkBtn" class="btn btn-primary">Add drink</button>
+    </div>
+  </section>
+
+  <!-- Logs with view toggle -->
   <section class="log-card">
     <div class="log-header">
-      <h2 class="section-title">Today</h2>
+      <h2 class="section-title">Consumption</h2>
+      <div class="view-toggle">
+        <button class="view-btn active" data-view="day">Today</button>
+        <button class="view-btn" data-view="week">Week</button>
+        <button class="view-btn" data-view="month">Month</button>
+      </div>
+    </div>
+
+    <div class="log-stats" id="logStats">
       <span class="log-total mono" id="logTotal">0 kcal</span>
     </div>
-    <ul class="log-list" id="logList">
-      <li class="log-empty" id="logEmpty">Nothing logged yet today.</li>
-    </ul>
+
+    <div class="log-view" id="dayView" data-view="day">
+      <ul class="log-list" id="logList">
+        <li class="log-empty" id="logEmpty">Nothing logged yet today.</li>
+      </ul>
+    </div>
+
+    <div class="log-view hidden" id="weekView" data-view="week">
+      <div class="chart-placeholder">
+        <div class="week-chart" id="weekChart">
+          <div class="chart-bar"><div class="bar-fill" style="height: 45%;"></div><span>Mon</span></div>
+          <div class="chart-bar"><div class="bar-fill" style="height: 60%;"></div><span>Tue</span></div>
+          <div class="chart-bar"><div class="bar-fill" style="height: 50%;"></div><span>Wed</span></div>
+          <div class="chart-bar"><div class="bar-fill" style="height: 70%;"></div><span>Thu</span></div>
+          <div class="chart-bar"><div class="bar-fill" style="height: 55%;"></div><span>Fri</span></div>
+          <div class="chart-bar"><div class="bar-fill" style="height: 65%;"></div><span>Sat</span></div>
+          <div class="chart-bar active"><div class="bar-fill" style="height: 40%;"></div><span>Today</span></div>
+        </div>
+      </div>
+      <p class="view-note">Weekly intake average: <span id="weekAvg" class="mono">1,850 kcal</span></p>
+    </div>
+
+    <div class="log-view hidden" id="monthView" data-view="month">
+      <div class="chart-placeholder">
+        <div class="month-chart" id="monthChart">
+          <div class="month-bar"><span>Week 1</span><div class="bar" style="height: 55%;"></div></div>
+          <div class="month-bar"><span>Week 2</span><div class="bar" style="height: 62%;"></div></div>
+          <div class="month-bar"><span>Week 3</span><div class="bar" style="height: 58%;"></div></div>
+          <div class="month-bar active"><span>Week 4</span><div class="bar" style="height: 48%;"></div></div>
+        </div>
+      </div>
+      <p class="view-note">Monthly average: <span id="monthAvg" class="mono">2,100 kcal</span></p>
+    </div>
   </section>
 
 </div>

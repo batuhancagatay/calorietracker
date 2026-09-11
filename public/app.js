@@ -314,7 +314,151 @@ els.logList.addEventListener('click', async (e) => {
   await refreshLog();
 });
 
-// ---------------- Init ----------------
+// --------------- View Toggle ----------------
+
+const viewBtns = document.querySelectorAll('.view-btn');
+const logViews = document.querySelectorAll('.log-view');
+
+viewBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const view = btn.dataset.view;
+
+    viewBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    logViews.forEach(v => v.classList.add('hidden'));
+    document.getElementById(`${view}View`).classList.remove('hidden');
+  });
+});
+
+// --------------- Quick Add Drinks ----------------
+
+const drinkMenu = {
+  'water': { name: 'Water', calories: 0 },
+  'coffee': { name: 'Coffee', calories: 5 },
+  'tea': { name: 'Tea', calories: 2 },
+  'orange-juice': { name: 'Orange juice', calories: 110 },
+  'cola': { name: 'Cola', calories: 140 },
+  'beer': { name: 'Beer', calories: 150 },
+  'wine': { name: 'Wine', calories: 125 },
+  'milk': { name: 'Milk', calories: 150 },
+  'smoothie': { name: 'Smoothie', calories: 200 },
+  'coffee-latte': { name: 'Coffee Latte', calories: 190 }
+};
+
+const drinkSelect = document.getElementById('drinkSelect');
+const drinkQty = document.getElementById('drinkQty');
+const addDrinkBtn = document.getElementById('addDrinkBtn');
+
+addDrinkBtn.addEventListener('click', async () => {
+  if (!drinkSelect.value) {
+    alert('Please select a drink');
+    return;
+  }
+
+  const drink = drinkMenu[drinkSelect.value];
+  const qty = parseInt(drinkQty.value) || 1;
+  const totalCals = drink.calories * qty;
+  const name = qty > 1 ? `${drink.name} x${qty}` : drink.name;
+
+  try {
+    const res = await fetch('/api/food-log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: name,
+        calories: totalCals,
+        time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+      })
+    });
+
+    if (res.ok) {
+      drinkSelect.value = '';
+      drinkQty.value = '1';
+      await refreshLog();
+    }
+  } catch (e) {
+    console.error('Error adding drink:', e);
+  }
+});
+
+// --------------- Edit Log Entry ----------------
+
+function makeEntryEditable(li, entry) {
+  const nameEl = li.querySelector('.log-entry-name');
+  const calEl = li.querySelector('.log-entry-cal');
+  const deleteBtn = li.querySelector('.log-entry-delete');
+
+  const originalName = nameEl.textContent;
+  const originalCal = parseInt(calEl.textContent);
+
+  nameEl.contentEditable = true;
+  calEl.contentEditable = true;
+  nameEl.focus();
+
+  const saveEdit = async () => {
+    const newName = nameEl.textContent.trim() || originalName;
+    const newCal = parseInt(calEl.textContent) || originalCal;
+
+    try {
+      await fetch(`/api/food-log/${entry.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: newName,
+          calories: newCal
+        })
+      });
+
+      nameEl.contentEditable = false;
+      calEl.contentEditable = false;
+      await refreshLog();
+    } catch (e) {
+      console.error('Error updating entry:', e);
+      nameEl.contentEditable = false;
+      calEl.contentEditable = false;
+    }
+  };
+
+  nameEl.addEventListener('blur', saveEdit);
+  calEl.addEventListener('blur', saveEdit);
+
+  const handleKeydown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saveEdit();
+    } else if (e.key === 'Escape') {
+      nameEl.textContent = originalName;
+      calEl.textContent = originalCal;
+      nameEl.contentEditable = false;
+      calEl.contentEditable = false;
+    }
+  };
+
+  nameEl.addEventListener('keydown', handleKeydown);
+  calEl.addEventListener('keydown', handleKeydown);
+}
+
+// Make entries editable on click
+document.addEventListener('click', (e) => {
+  const entry = e.target.closest('.log-list li:not(.log-empty)');
+  if (!entry || e.target.closest('.log-entry-delete')) return;
+
+  const entryId = entry.querySelector('.log-entry-delete').dataset.id;
+  const logItems = JSON.parse(localStorage.getItem('logItems') || '[]');
+  const entryData = logItems.find(item => item.id == entryId);
+
+  if (entryData) {
+    makeEntryEditable(entry, entryData);
+  }
+});
+
+// Store log items in localStorage for demo
+if (!localStorage.getItem('logItems')) {
+  localStorage.setItem('logItems', JSON.stringify([]));
+}
+
+// --------------- Init ----------------
 
 (async function init() {
   const params = new URLSearchParams(window.location.search);
