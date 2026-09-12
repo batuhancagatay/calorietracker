@@ -98,6 +98,8 @@ html, body {
 
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
 
+[hidden] { display: none !important; }
+
 button, input {
   font-family: inherit;
   color: inherit;
@@ -315,7 +317,8 @@ button, input {
 .capture-stage {
   position: relative;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 1 / 1;
+  min-height: 320px;
   background: var(--surface-raised);
   border-radius: var(--radius-md);
   overflow: hidden;
