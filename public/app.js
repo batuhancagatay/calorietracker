@@ -549,21 +549,40 @@ function renderCalendar() {
     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const cell = document.createElement('div');
     cell.className = 'calendar-day';
-    cell.textContent = day;
 
     const logs = allLogs[dateStr] || [];
+    let circle = null;
+
     if (logs.length > 0) {
       const total = logs.reduce((sum, log) => sum + (log.calories || 0), 0);
       const burned = state.burned || 2000; // default estimate
-      const net = burned - total;
+      const percentage = (total / burned) * 100;
 
-      cell.classList.add('has-logs');
-      cell.classList.add(net >= 0 ? 'surplus' : 'deficit');
+      circle = document.createElement('div');
+      circle.className = 'calendar-circle';
+
+      // Color based on percentage
+      if (percentage < 34) {
+        circle.classList.add('circle-deficit');
+      } else if (percentage >= 34 && percentage <= 66) {
+        circle.classList.add('circle-balanced');
+      } else {
+        circle.classList.add('circle-surplus');
+      }
+
+      circle.textContent = day;
+      cell.appendChild(circle);
+    } else {
+      cell.textContent = day;
     }
 
     // Highlight today
     if (dateStr === todayStr()) {
-      cell.classList.add('today');
+      if (circle) {
+        circle.classList.add('today');
+      } else {
+        cell.classList.add('today');
+      }
     }
 
     cell.addEventListener('click', () => showSelectedDate(dateStr, logs));
