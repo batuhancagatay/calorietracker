@@ -161,6 +161,7 @@
       <h2 class="section-title">Consumption</h2>
       <div class="view-toggle">
         <button class="view-btn active" data-view="day">Today</button>
+        <button class="view-btn" data-view="calendar">Calendar</button>
         <button class="view-btn" data-view="week">Week</button>
         <button class="view-btn" data-view="month">Month</button>
       </div>
@@ -174,6 +175,20 @@
       <ul class="log-list" id="logList">
         <li class="log-empty" id="logEmpty">Nothing logged yet today.</li>
       </ul>
+    </div>
+
+    <div class="log-view hidden" id="calendarView" data-view="calendar">
+      <div class="calendar-header">
+        <button id="prevMonth" class="calendar-nav">←</button>
+        <h3 id="calendarMonth" class="calendar-title">September 2026</h3>
+        <button id="nextMonth" class="calendar-nav">→</button>
+      </div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+      <div id="selectedDateInfo" class="selected-date-info" hidden>
+        <h4 id="selectedDateTitle">September 12</h4>
+        <p id="selectedDateBalance">Balance: —</p>
+        <ul class="log-list" id="selectedDateLogs"></ul>
+      </div>
     </div>
 
     <div class="log-view hidden" id="weekView" data-view="week">

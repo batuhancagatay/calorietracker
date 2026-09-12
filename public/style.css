@@ -720,6 +720,127 @@ button, input {
   margin: 0;
 }
 
+/* Calendar View */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.calendar-nav {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.calendar-nav:hover {
+  border-color: var(--text-muted);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+  font-family: var(--font-display);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  padding: 8px 0;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-raised);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.calendar-day:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.calendar-day.other-month {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.calendar-day.other-month:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.calendar-day.has-logs {
+  border-width: 2px;
+}
+
+.calendar-day.surplus {
+  background: rgba(127, 183, 126, 0.2);
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.calendar-day.deficit {
+  background: rgba(217, 105, 79, 0.2);
+  border-color: var(--rust);
+  color: var(--rust);
+}
+
+.calendar-day.today {
+  background: var(--amber);
+  color: #1a1200;
+  border-color: var(--amber);
+}
+
+.selected-date-info {
+  padding: 16px;
+  background: var(--surface-raised);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+.selected-date-info h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.selected-date-info p {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
 .log-empty {
   color: var(--text-muted);
   font-size: 13.5px;

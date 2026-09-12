@@ -482,10 +482,146 @@ document.addEventListener('click', (e) => {
   }
 });
 
-// Store log items in localStorage for demo
+// Store log items in localStorage
+function getAllLogs() {
+  const logs = JSON.parse(localStorage.getItem('logItems') || '[]');
+  return logs.reduce((acc, log) => {
+    const date = log.day || todayStr();
+    if (!acc[date]) acc[date] = [];
+    acc[date].push(log);
+    return acc;
+  }, {});
+}
+
 if (!localStorage.getItem('logItems')) {
   localStorage.setItem('logItems', JSON.stringify([]));
 }
+
+// --------------- Calendar View ----------------
+
+let calendarCurrentMonth = new Date();
+
+function getDaysInMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+}
+
+function getFirstDayOfMonth(date) {
+  return new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+}
+
+function renderCalendar() {
+  const grid = document.getElementById('calendarGrid');
+  const monthTitle = document.getElementById('calendarMonth');
+  const month = calendarCurrentMonth.getMonth();
+  const year = calendarCurrentMonth.getFullYear();
+
+  monthTitle.textContent = calendarCurrentMonth.toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric'
+  });
+
+  grid.innerHTML = '';
+
+  // Day headers
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  dayNames.forEach(day => {
+    const header = document.createElement('div');
+    header.className = 'calendar-day-header';
+    header.textContent = day;
+    grid.appendChild(header);
+  });
+
+  // Empty cells for previous month
+  const firstDay = getFirstDayOfMonth(calendarCurrentMonth);
+  for (let i = 0; i < firstDay; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'calendar-day other-month';
+    cell.textContent = '';
+    grid.appendChild(cell);
+  }
+
+  // Days of month
+  const daysInMonth = getDaysInMonth(calendarCurrentMonth);
+  const allLogs = getAllLogs();
+  const today = new Date();
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const cell = document.createElement('div');
+    cell.className = 'calendar-day';
+    cell.textContent = day;
+
+    const logs = allLogs[dateStr] || [];
+    if (logs.length > 0) {
+      const total = logs.reduce((sum, log) => sum + (log.calories || 0), 0);
+      const burned = state.burned || 2000; // default estimate
+      const net = burned - total;
+
+      cell.classList.add('has-logs');
+      cell.classList.add(net >= 0 ? 'surplus' : 'deficit');
+    }
+
+    // Highlight today
+    if (dateStr === todayStr()) {
+      cell.classList.add('today');
+    }
+
+    cell.addEventListener('click', () => showSelectedDate(dateStr, logs));
+    grid.appendChild(cell);
+  }
+}
+
+function showSelectedDate(dateStr, logs) {
+  const info = document.getElementById('selectedDateInfo');
+  const title = document.getElementById('selectedDateTitle');
+  const balance = document.getElementById('selectedDateBalance');
+  const logsList = document.getElementById('selectedDateLogs');
+
+  const date = new Date(dateStr + 'T00:00:00');
+  title.textContent = date.toLocaleDateString('en-US', {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const total = logs.reduce((sum, log) => sum + (log.calories || 0), 0);
+  const burned = state.burned || 2000;
+  const net = burned - total;
+
+  balance.textContent = `In: ${total} kcal | Out: ~${burned} kcal | Net: ${net >= 0 ? '+' : ''}${net}`;
+  balance.style.color = net >= 0 ? 'var(--green)' : 'var(--rust)';
+
+  logsList.innerHTML = '';
+  if (logs.length === 0) {
+    logsList.innerHTML = '<li class="log-empty">No logs for this day</li>';
+  } else {
+    logs.forEach(log => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <div class="log-entry-main">
+          <div class="log-entry-name">${escapeHtml(log.name || 'Unnamed')}</div>
+          <div class="log-entry-time">${log.time || ''}</div>
+        </div>
+        <div class="log-entry-right">
+          <span class="log-entry-cal mono">${log.calories || 0}</span>
+        </div>
+      `;
+      logsList.appendChild(li);
+    });
+  }
+
+  info.hidden = false;
+}
+
+document.getElementById('prevMonth').addEventListener('click', () => {
+  calendarCurrentMonth.setMonth(calendarCurrentMonth.getMonth() - 1);
+  renderCalendar();
+});
+
+document.getElementById('nextMonth').addEventListener('click', () => {
+  calendarCurrentMonth.setMonth(calendarCurrentMonth.getMonth() + 1);
+  renderCalendar();
+});
 
 // --------------- Theme Toggle ----------------
 
