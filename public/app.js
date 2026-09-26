@@ -348,13 +348,11 @@ const drinkMenu = {
 
 const drinkSelect = document.getElementById('drinkSelect');
 const drinkQty = document.getElementById('drinkQty');
-const addDrinkBtn = document.getElementById('addDrinkBtn');
+const changeDrinkBtn = document.getElementById('changeDrinkBtn');
+const drinkFeedback = document.getElementById('drinkFeedback');
 
-addDrinkBtn.addEventListener('click', async () => {
-  if (!drinkSelect.value) {
-    alert('Please select a drink');
-    return;
-  }
+async function addDrinkToLog() {
+  if (!drinkSelect.value) return;
 
   const drink = drinkMenu[drinkSelect.value];
   const qty = parseInt(drinkQty.value) || 1;
@@ -373,13 +371,51 @@ addDrinkBtn.addEventListener('click', async () => {
     });
 
     if (res.ok) {
-      drinkSelect.value = '';
-      drinkQty.value = '1';
+      showDrinkAdded(name, totalCals);
       await refreshLog();
+      resetDrinkSelector();
     }
   } catch (e) {
     console.error('Error adding drink:', e);
   }
+}
+
+function showDrinkAdded(drinkName, calories) {
+  drinkFeedback.hidden = false;
+  drinkFeedback.innerHTML = `✓ Added: <strong>${escapeHtml(drinkName)}</strong> (${calories} kcal)`;
+
+  changeDrinkBtn.hidden = false;
+  drinkSelect.hidden = true;
+  drinkQty.parentElement.hidden = true;
+
+  setTimeout(() => {
+    drinkFeedback.hidden = true;
+  }, 2000);
+}
+
+function resetDrinkSelector() {
+  drinkSelect.value = '';
+  drinkQty.value = '1';
+  changeDrinkBtn.hidden = true;
+  drinkSelect.hidden = false;
+  drinkQty.parentElement.hidden = false;
+  drinkFeedback.hidden = true;
+}
+
+drinkSelect.addEventListener('change', () => {
+  if (drinkSelect.value) {
+    addDrinkToLog();
+  }
+});
+
+drinkQty.addEventListener('change', () => {
+  if (drinkSelect.value) {
+    addDrinkToLog();
+  }
+});
+
+changeDrinkBtn.addEventListener('click', () => {
+  resetDrinkSelector();
 });
 
 // --------------- Edit Log Entry ----------------

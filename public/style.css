@@ -545,6 +545,19 @@ button, input {
   text-align: center;
   transition: border-color 0.15s ease;
 }
+
+.drink-feedback {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px 12px;
+  background: rgba(127, 183, 126, 0.1);
+  border: 1px solid var(--green);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--green);
+  text-align: center;
+  font-weight: 500;
+}
 .quantity-input:focus { outline: 2px solid var(--blue); outline-offset: 2px; }
 
 /* ---------- Log card ---------- */
